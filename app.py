@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import folium
@@ -9,14 +8,24 @@ st.title("🔥 Stubble Burning Risk Dashboard")
 
 df = pd.read_csv("dashboard_data.csv")
 
+if df.empty:
+    st.error("❌ DataFrame is empty.")
+    st.stop()
+
+st.write("✅ CSV Preview", df.head())
+st.write("✅ Total Rows:", df.shape[0])
+
 st.sidebar.header("🔎 Filters")
 threshold = st.sidebar.slider("Risk Threshold (0.0 - 1.0)", 0.0, 1.0, 0.7)
+st.write("✅ Threshold:", threshold)
 
 high_risk = df[df['predicted_probability'] > threshold]
 
 st.subheader("🗺️ High-Risk Locations Map")
 
-m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()], zoom_start=6)
+# FIXED center to India region (Punjab/Haryana)
+m = folium.Map(location=[29.5, 76.5], zoom_start=6)
+
 for _, row in df.iterrows():
     color = "red" if row['predicted_probability'] > threshold else "blue"
     folium.CircleMarker(
