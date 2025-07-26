@@ -26,16 +26,16 @@ st.subheader("🗺️ High-Risk Locations Map")
 # FIXED center to India region (Punjab/Haryana)
 m = folium.Map(location=[29.5, 76.5], zoom_start=6)
 
-for _, row in df.iterrows():
-    color = "red" if row['predicted_probability'] > threshold else "blue"
+for _, row in high_risk.iterrows():
     folium.CircleMarker(
         location=[row['latitude'], row['longitude']],
         radius=4,
-        color=color,
+        color="red",
         fill=True,
         fill_opacity=0.7,
         tooltip=f"🔥 Risk: {row['predicted_probability']:.2f}, Event: {row['actual_event']}"
     ).add_to(m)
+
 
 st_folium(m, width=1200)
 
